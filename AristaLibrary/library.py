@@ -35,8 +35,13 @@ from pyeapi.eapilib import CommandError
 from pyeapi.utils import make_iterable
 from robot.api import logger
 from robot.utils import ConnectionCache
-from version import VERSION
+from AristaLibrary import __version__ as VERSION
 import re
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 
 class AristaLibrary(object):
@@ -303,7 +308,7 @@ class AristaLibrary(object):
         elif isinstance(commands, list):
             # Handle Python2 unicode strings
             for idx, command in enumerate(commands):
-                if isinstance(command, unicode):
+                if isinstance(command, basestring):
                     commands[idx] = str(command)
 
         try:
@@ -356,7 +361,7 @@ class AristaLibrary(object):
         elif isinstance(commands, list):
             # Handle Python2 unicode strings
             for idx, command in enumerate(commands):
-                if isinstance(command, unicode):
+                if isinstance(command, basestring):
                     commands[idx] = str(command)
 
         try:
@@ -399,7 +404,7 @@ class AristaLibrary(object):
         elif isinstance(commands, list):
             # Handle Python2 unicode strings
             for idx, command in enumerate(commands):
-                if isinstance(command, unicode):
+                if isinstance(command, basestring):
                     commands[idx] = str(command)
 
         try:

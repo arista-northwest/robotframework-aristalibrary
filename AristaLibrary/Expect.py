@@ -31,8 +31,15 @@
 
 import re
 import logging
+
+try:
+    basestring
+except NameError:
+    basestring = str
+
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-from version import VERSION
+
+from AristaLibrary import __version__ as VERSION
 
 AE_ERR = 'AristaLibrary.Expect: '       # Arista Expect Error prefix
 
@@ -480,7 +487,7 @@ class Expect(object):
                 try:
                     returned = returned[k]
                 except TypeError as e:
-                    if 'list indices must be integers' in e.message:
+                    if 'list indices must be integers' in str(e):
                         returned = returned[int(k)]
                     else:
                         raise
@@ -634,7 +641,7 @@ class Expect(object):
                 try:
                     returned = returned[k]
                 except TypeError as e:
-                    if 'list indices must be integers' in e.message:
+                    if 'list indices must be integers' in str(e):
                         returned = returned[int(k)]
                     else:
                         raise
@@ -762,7 +769,7 @@ class Expect(object):
     # ---------------- Keyword 'contains' and equivalents ---------------- #
 
     def _contains(self, key, returned, match, msg=None):
-        if isinstance(returned, str) or isinstance(returned, unicode):
+        if isinstance(returned, basestring):
             # If we have a (unicode) string, fail if the returned value
             # does not contain the match value
             if match not in returned:
@@ -800,7 +807,7 @@ class Expect(object):
     # --------------- Keyword 'does not contain' and equivalents ------------ #
 
     def _does_not_contain(self, key, returned, match, msg=None):
-        if isinstance(returned, str) or isinstance(returned, unicode):
+        if isinstance(returned, basestring): # or isinstance(returned, unicode):
             # If we have a (unicode) string, fail if the returned value
             # contains the match value as a substring
             if match in returned:
@@ -841,7 +848,7 @@ class Expect(object):
     # -------------- Keyword 'contains line' and equivalents --------------- #
 
     def _contains_line(self, key, returned, match, msg=None):
-        if isinstance(returned, str) or isinstance(returned, unicode):
+        if isinstance(returned, basestring):
             # If we have a (unicode) string, fail if the returned value
             # does not equal the match value
             if returned.strip() != match:
@@ -851,12 +858,12 @@ class Expect(object):
                 )
         elif isinstance(returned, list):
             # If we have a list, fail if the match value is not in the list
-            regex = re.compile("\s*{}".format(match))
+            regex = re.compile(r"\s*" + match)
             matches = [m.group(0) for line in returned for m in
                        [regex.search(line)] if m]
             if not matches:
                 raise RuntimeError(
-                    msg='{}Did not find \'{}\' in \'{}\''.format(AE_ERR, match,
+                    '{}Did not find \'{}\' in \'{}\''.format(AE_ERR, match,
                                                                  key)
                 )
         else:
@@ -874,7 +881,7 @@ class Expect(object):
     # --------------- Keyword 'does not contain line' and equivalents ------- #
 
     def _does_not_contain_line(self, key, returned, match, msg=None):
-        if isinstance(returned, str) or isinstance(returned, unicode):
+        if isinstance(returned, basestring):
             # If we have a (unicode) string, fail if the returned value
             # equals the match value
             if returned == match:
@@ -913,11 +920,11 @@ class Expect(object):
             try:
                 returned = int(returned)
             except ValueError as e:
-                if 'invalid literal for int()' in e.message:
+                if 'invalid literal for int()' in str(e):
                     try:
                         returned = float(returned)
                     except ValueError as e:
-                        if 'could not convert string to float' in e.message:
+                        if 'could not convert string to float' in str(e):
                             raise RuntimeError(
                                 '{}Key: \'{}\', Returned: \'{}\', must compare to an int or float.'
                                 .format(AE_ERR, key, returned)
@@ -926,11 +933,11 @@ class Expect(object):
             try:
                 match = int(match)
             except ValueError as e:
-                if 'invalid literal for int()' in e.message:
+                if 'invalid literal for int()' in str(e):
                     try:
                         match = float(match)
                     except ValueError as e:
-                        if 'could not convert string to float' in e.message:
+                        if 'could not convert string to float' in str(e):
                             raise RuntimeError(
                                 '{}Key: \'{}\', Match: \'{}\', must provide an int or float as a match value.'
                                 .format(AE_ERR, key, match)
@@ -969,11 +976,11 @@ class Expect(object):
             try:
                 returned = int(returned)
             except ValueError as e:
-                if 'invalid literal for int()' in e.message:
+                if 'invalid literal for int()' in str(e):
                     try:
                         returned = float(returned)
                     except ValueError as e:
-                        if 'could not convert string to float' in e.message:
+                        if 'could not convert string to float' in str(e):
                             raise RuntimeError(
                                 '{}Key: \'{}\', Returned: \'{}\', must compare to an int or float.'
                                 .format(AE_ERR, key, returned)
@@ -982,18 +989,18 @@ class Expect(object):
             try:
                 match = int(match)
             except ValueError as e:
-                if 'invalid literal for int()' in e.message:
+                if 'invalid literal for int()' in str(e):
                     try:
                         match = float(match)
                     except ValueError as e:
-                        if 'could not convert string to float' in e.message:
+                        if 'could not convert string to float' in str(e):
                             raise RuntimeError(
                                 '{}Key: \'{}\', Match: \'{}\', must provide an int or float as a match value.'
                                 .format(AE_ERR, key, match)
                             )
         if returned >= match:
             raise RuntimeError(
-                msg='{}Key: \'{}\', Found: \'{}\', Should be less than: \'{}\''
+                '{}Key: \'{}\', Found: \'{}\', Should be less than: \'{}\''
                 .format(AE_ERR, key, returned, match)
             )
 

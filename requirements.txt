@@ -1,3 +1,0 @@
-docutils>=0.9
-pyeapi
-robotframework

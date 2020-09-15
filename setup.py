@@ -29,28 +29,35 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re 
+
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 from os.path import abspath, dirname, join
+import io
 
 CURDIR = dirname(abspath(__file__))
 
-#from AristaLibrary import __version__, __author__
-execfile(join(CURDIR, 'AristaLibrary', 'version.py'))
+# #from AristaLibrary import __version__, __author__
+# execfile(join(CURDIR, 'AristaLibrary', 'version.py'))
+
+with io.open('AristaLibrary/__init__.py', 'rt', encoding='utf8') as f:
+    version = re.search(r'__version__ = \"(.*?)\"', f.read()).group(1)
+
 with open(join(CURDIR, 'README.rst')) as readme:
     README = readme.read()
 
 setup(
     name='robotframework-aristalibrary',
-    version=VERSION,
+    version=version,
     description='Python Robot Framework Library for EOS devices',
     long_description=README,
     author='Arista EOS+ Consulting Services',
     author_email='eosplus-dev@arista.com',
-    url='https://aristanetworks.github.io/robotframework-aristalibrary/',
-    download_url='https://github.com/aristanetworks/robotframework-aristalibrary/tarball/%s' % VERSION,
+    url='https://arista-northwest.github.io/robotframework-aristalibrary/',
+    download_url='https://github.com/arista-northwest/robotframework-aristalibrary/tarball/%s' % version,
     license='BSD-3',
     platforms='any',
     keywords='robotframework testing testautomation arista eos eapi pyeapi',
