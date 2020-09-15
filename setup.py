@@ -40,9 +40,6 @@ import io
 
 CURDIR = dirname(abspath(__file__))
 
-# #from AristaLibrary import __version__, __author__
-# execfile(join(CURDIR, 'AristaLibrary', 'version.py'))
-
 with io.open('AristaLibrary/__init__.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \"(.*?)\"', f.read()).group(1)
 
